@@ -189,6 +189,16 @@
             width: 100%;
             height: 100%;
         }
+        @keyframes flowing-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .bg-blue-flowing {
+            background: linear-gradient(270deg, #020617, #1e3a8a, #4b8eff, #020617);
+            background-size: 400% 400%;
+            animation: flowing-gradient 12s ease infinite;
+        }
     </style>
 </head>
 
@@ -614,15 +624,15 @@
                 </div>
             </div>
         </section>
-        <!-- Final CTA: Lime-Green Highlight -->
-        <section id="contact" class="py-32 px-8 bg-[#d9ff00] mt-24">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
-                <h2 class="font-headline font-bold text-5xl md:text-8xl text-black tracking-tighter max-w-2xl leading-[0.9]">
+        <!-- Final CTA: Animated Flowing Blue -->
+        <section id="contact" class="py-32 px-8 bg-blue-flowing mt-24">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10 relative z-10">
+                <h2 class="font-headline font-bold text-5xl md:text-8xl text-white tracking-tighter max-w-2xl leading-[0.9]">
                     Let's work together
                 </h2>
                 <div class="flex gap-10">
-                    <a href="#" class="text-lg md:text-xl font-black text-black border-b-[3px] border-black pb-1 hover:opacity-60 transition-opacity">Get in Touch</a>
-                    <a href="#" class="text-lg md:text-xl font-black text-black border-b-[3px] border-black pb-1 hover:opacity-60 transition-opacity">Careers</a>
+                    <a href="#" class="text-lg md:text-xl font-black text-white border-b-[3px] border-white pb-1 hover:opacity-60 transition-opacity">Get in Touch</a>
+                    <a href="#" class="text-lg md:text-xl font-black text-white border-b-[3px] border-white pb-1 hover:opacity-60 transition-opacity">Careers</a>
                 </div>
             </div>
         </section>
