@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Interactive Mapper | The Digital Concierge</title>
+<!-- Version: 1.2.0 - Dynamic Portfolio Integration -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#4b8eff",
+                        "on-primary-fixed": "#001a41",
+                        "on-background": "#e5e2e1",
+                        "surface": "#131313",
+                        "surface-container-high": "#2a2a2a",
+                        "on-surface": "#e5e2e1",
+                        "on-tertiary-container": "#4c1a00",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#351000",
+                        "on-primary": "#002e69",
+                        "primary-fixed-dim": "#adc6ff",
+                        "surface-container-highest": "#353534",
+                        "on-tertiary-fixed-variant": "#7c2e00",
+                        "surface-container": "#201f1f",
+                        "inverse-primary": "#005bc1",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-tertiary": "#571e00",
+                        "on-error": "#690005",
+                        "surface-dim": "#131313",
+                        "on-secondary-fixed-variant": "#26467d",
+                        "outline-variant": "#414755",
+                        "on-primary-container": "#00285c",
+                        "inverse-on-surface": "#313030",
+                        "secondary": "#adc6ff",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "tertiary-fixed-dim": "#ffb595",
+                        "outline": "#8b90a0",
+                        "primary-fixed": "#d8e2ff",
+                        "primary": "#adc6ff",
+                        "on-primary-fixed-variant": "#004493",
+                        "background": "#131313",
+                        "secondary-container": "#26467d",
+                        "surface-container-low": "#1c1b1b",
+                        "on-surface-variant": "#c1c6d7",
+                        "surface-variant": "#353534",
+                        "surface-tint": "#adc6ff",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed": "#001a41",
+                        "tertiary-fixed": "#ffdbcc",
+                        "tertiary-container": "#ef6719",
+                        "error-container": "#93000a",
+                        "on-secondary-container": "#98b5f3",
+                        "on-secondary": "#082f65",
+                        "surface-container-lowest": "#0e0e0e",
+                        "tertiary": "#ffb595"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(53, 53, 52, 0.6);
+            backdrop-filter: blur(24px);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #adc6ff 0%, #4b8eff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #adc6ff 0%, #4b8eff 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Refined Flip Card Logic */
+        .card-flip { perspective: 2000px; cursor: pointer; }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+        .card-flip:hover .card-inner { 
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1.5rem;
+            overflow: hidden;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+            background: #18191c;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08); /* Subtle border for dark cards */
+        }
+        /* Extra depth on hover */
+        .card-flip:hover {
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary/30">
+<!-- Floating Glass Navigation -->
+<nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl">
+    <div class="glass-panel px-8 py-4 rounded-full border border-white/10 flex justify-between items-center shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]">
+        <div class="text-xl font-black tracking-tighter text-zinc-100 uppercase">Interactive Mapper</div>
+        <div class="hidden md:flex items-center space-x-8">
+            <a class="text-zinc-400 hover:text-zinc-100 transition-colors font-sans uppercase tracking-[0.2em] text-[8px] font-bold" href="#home">Home</a>
+            <a class="text-zinc-400 hover:text-zinc-100 transition-colors font-sans uppercase tracking-[0.2em] text-[8px] font-bold" href="#features">Features</a>
+            <a class="text-zinc-400 hover:text-zinc-100 transition-colors font-sans uppercase tracking-[0.2em] text-[8px] font-bold" href="#process">Process</a>
+            <a class="text-zinc-400 hover:text-zinc-100 transition-colors font-sans uppercase tracking-[0.2em] text-[8px] font-bold" href="#samples">Portfolio</a>
+            <a class="text-zinc-400 hover:text-zinc-100 transition-colors font-sans uppercase tracking-[0.2em] text-[8px] font-bold" href="#analytics">Insights</a>
+        </div>
+        <a href="#contact" class="btn-gradient px-6 py-2 rounded-full text-on-primary font-bold text-xs tracking-wide transition-all hover:scale-105 active:scale-95 shadow-lg shadow-primary/20">
+            Get Started
+        </a>
+    </div>
+</nav>
+<main class="pt-8">
+<!-- Hero Section -->
+<section id="home" class="relative min-h-[921px] flex items-center px-8 overflow-hidden">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="z-10">
+<h1 class="font-headline font-extrabold text-6xl md:text-7xl text-zinc-100 leading-[1.1] mb-8 tracking-tight">
+                        The Interactive Evolution of Hotel Navigation.
+                    </h1>
+<p class="text-lg md:text-xl text-on-surface-variant max-w-xl mb-10 leading-relaxed font-medium">
+                        Transform your static 3D maps into dynamic, action-oriented digital front-ends. Bridge the gap from PDF and print to a living, interactive guest experience.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="btn-gradient px-10 py-4 rounded-xl text-on-primary font-bold text-lg hover:shadow-[0_0_30px_rgba(75,142,255,0.4)] transition-all">
+                            Upgrade Your Map
+                        </button>
+</div>
+</div>
+<div class="relative group">
+<div class="absolute -inset-4 bg-primary/20 blur-3xl rounded-full opacity-30 group-hover:opacity-50 transition-opacity"></div>
+<div class="relative glass-panel p-4 rounded-[2rem] border border-outline-variant/30 shadow-2xl">
+<!-- Mockup representation of interactive 3D map -->
+<div class="aspect-[9/16] md:aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-lowest relative">
+<img class="w-full h-full object-cover opacity-60" data-alt="Architectural wireframe of the hotel complex" src="assets/hero_map.png"/>
+<!-- Floating UI Hotspots -->
+<div class="absolute top-1/4 left-1/3 p-3 glass-panel rounded-full border border-primary/50 shadow-lg cursor-pointer hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">spa</span>
+</div>
+<div class="absolute bottom-1/3 right-1/4 p-3 glass-panel rounded-full border border-primary/50 shadow-lg cursor-pointer hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<!-- Map HUD Overlay -->
+<div class="absolute bottom-6 left-6 right-6 p-4 glass-panel rounded-xl border border-outline-variant/50">
+<div class="flex justify-between items-center">
+<div>
+<p class="text-[10px] uppercase tracking-widest font-bold text-outline mb-1">Current Selection</p>
+<p class="font-headline text-lg font-bold text-zinc-100">Zenith Spa &amp; Wellness</p>
+</div>
+<button class="btn-gradient px-4 py-2 rounded-lg text-xs font-bold text-on-primary">Book Treatment</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Pain Point Section -->
+<section id="features" class="py-24 bg-surface-container-low px-8">
+<div class="max-w-7xl mx-auto flex flex-col items-center text-center mb-16">
+<div class="w-12 h-1 bg-primary mb-12"></div>
+<h2 class="font-headline font-bold text-4xl md:text-5xl text-zinc-100 mb-8 tracking-tight">Your Map is Only the Beginning.</h2>
+<p class="text-xl md:text-2xl text-on-surface-variant max-w-3xl leading-relaxed font-medium">
+                    Most hotels have beautiful 3D renderings that sit idle in PDFs or on signboards. We unlock their potential, turning them into the primary interface for the entire guest journey.
+                </p>
+</div>
+
+<!-- Intersitial Image -->
+<div class="max-w-6xl mx-auto mb-20 flex justify-center">
+    <img src="https://static.wixstatic.com/media/ad2999_dbf22571a53e4f6888d6d23a859f4b01~mv2.png" alt="Interactive Map Interface" class="w-full h-auto object-contain"/>
+</div>
+
+<div class="max-w-7xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="p-8 rounded-2xl bg-surface-container hover:bg-surface-bright transition-colors border border-outline-variant/10">
+<span class="material-symbols-outlined text-4xl text-primary mb-6" style="font-variation-settings: 'FILL' 1;">3d_rotation</span>
+<h3 class="font-headline text-2xl font-bold mb-4 text-zinc-100">Static to Smart</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                            We ingest your existing 3D assets—from CAD files to architectural renderings—and layer them with real-time interactivity.
+                        </p>
+</div>
+<div class="p-8 rounded-2xl bg-surface-container hover:bg-surface-bright transition-colors border border-outline-variant/10">
+<span class="material-symbols-outlined text-4xl text-primary mb-6" style="font-variation-settings: 'FILL' 1;">touch_app</span>
+<h3 class="font-headline text-2xl font-bold mb-4 text-zinc-100">Actionable Hotspots</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                            Place 'one-tap' buttons directly on the map for services like housekeeping, dining, and spa bookings. Contextual commerce, simplified.
+                        </p>
+</div>
+<div class="p-8 rounded-2xl bg-surface-container hover:bg-surface-bright transition-colors border border-outline-variant/10">
+<span class="material-symbols-outlined text-4xl text-primary mb-6" style="font-variation-settings: 'FILL' 1;">web</span>
+<h3 class="font-headline text-2xl font-bold mb-4 text-zinc-100">The Guest Front-End</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                            A unified digital portal that works on any browser or lobby kiosk. No app download required, ensuring 100% guest accessibility.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- The Transformation Phases (Bento/Asymmetric) -->
+<section id="process" class="py-32 px-8 bg-surface-container-lowest">
+<div class="max-w-7xl mx-auto">
+<div class="mb-20">
+<p class="text-primary font-label text-xs uppercase tracking-[0.2em] mb-4 font-bold">The Process</p>
+<h2 class="font-headline font-bold text-5xl text-zinc-100 tracking-tight">From Visual to Vital.</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Step 1 -->
+<div class="md:col-span-7 bg-surface-container p-10 rounded-3xl border border-outline-variant/20 flex flex-col justify-between group">
+<div>
+<span class="font-headline text-6xl text-primary/20 font-black group-hover:text-primary transition-colors">01</span>
+<h4 class="font-headline text-3xl font-bold mt-4 mb-4 text-zinc-100">Map Ingestion</h4>
+<p class="text-on-surface-variant text-lg">We import your existing 3D files, floor plans, or renderings into our cartographic engine. Precision meets aesthetics.</p>
+</div>
+<div class="mt-12 h-40 bg-zinc-900 rounded-xl overflow-hidden">
+<img class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-700" data-alt="Architectural wireframe of a hotel complex" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLppSyN6z6FJY7Hz_V77iQcTDc6Pqqt8Qz9Xb5cb__sK6wyT9i3vhwwWheHykJI2C6ansGsP-yqpGeZ_LxoBrrPBKQSFlGnmqA9aSRyDKw47f_DkLYwWZFpTcHngfWJCNLRn5jLkJrqn-zMH7matAb1GC8RwPfmsMgqqrK2tSoMmQQeF6vkxSNkkFuK1WKkOXQm-wyRfVmAYbgIcAGwMsrmSYnCdmgp81eqZYgamtiY2S_BfwEBbubkSit59uQSYp9MAtgO3AoimE"/>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="md:col-span-5 bg-surface-container-high p-10 rounded-3xl border border-outline-variant/20 group">
+<span class="font-headline text-6xl text-primary/20 font-black group-hover:text-primary transition-colors">02</span>
+<h4 class="font-headline text-3xl font-bold mt-4 mb-4 text-zinc-100">Interactive Layering</h4>
+<p class="text-on-surface-variant text-lg">Defining functional zones and adding hotspots. Every room, pool, and bar becomes an interactive asset.</p>
+<div class="mt-8 flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container-lowest rounded-full text-[10px] font-bold uppercase tracking-wider text-primary border border-primary/20">Hotspot ID #442</span>
+<span class="px-3 py-1 bg-surface-container-lowest rounded-full text-[10px] font-bold uppercase tracking-wider text-primary border border-primary/20">Trigger: Booking</span>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="md:col-span-5 bg-surface-container-high p-10 rounded-3xl border border-outline-variant/20 group">
+<span class="font-headline text-6xl text-primary/20 font-black group-hover:text-primary transition-colors">03</span>
+<h4 class="font-headline text-3xl font-bold mt-4 mb-4 text-zinc-100">Service Integration</h4>
+<p class="text-on-surface-variant text-lg">Connecting the map to your HMS/PMS. Orders placed on the map flow directly to your existing staff workflows.</p>
+</div>
+<!-- Step 4 -->
+<div class="md:col-span-7 bg-primary-container/10 p-10 rounded-3xl border border-primary/30 group">
+<span class="font-headline text-6xl text-primary/40 font-black group-hover:text-primary transition-colors">04</span>
+<h4 class="font-headline text-3xl font-bold mt-4 mb-4 text-zinc-100">Live Deployment</h4>
+<p class="text-on-surface-variant text-lg">Instant launch across QR codes, kiosks, and guest tablets. Your hotel is now a dynamic digital ecosystem.</p>
+<div class="mt-12 p-6 glass-panel rounded-xl">
+<div class="flex items-center gap-4">
+<div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+<span class="text-xs font-bold uppercase tracking-widest text-zinc-100">System Online: Guest Interaction Active</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Samples Section -->
+<section id="samples" class="py-32 px-8 bg-black">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-20 text-center">
+            <p class="text-primary font-label text-xs uppercase tracking-[0.2em] mb-4 font-bold">Showcase</p>
+            <h2 class="font-headline font-bold text-5xl text-zinc-100 tracking-tight">Interactive Samples.</h2>
+            <p class="text-zinc-400 mt-6 max-w-2xl mx-auto">Explore some of the world's most iconic luxury destinations brought to life with our precision mapping engine.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[400px]">
+            <!-- Atlantis, Palm Jumeirah -->
+            <div class="md:col-span-8 card-flip">
+                <div class="card-inner">
+                    <div class="card-front relative shadow-2xl">
+                        <img src="assets/atlantis_palm.png" class="w-full h-full object-cover" alt="Atlantis, Palm Jumeirah">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-8">
+                            <div>
+                                <h4 class="text-2xl font-bold text-white mb-2">Atlantis, Palm Jumeirah</h4>
+                                <span class="text-primary text-xs uppercase tracking-widest font-bold">Featured Project</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <span class="material-symbols-outlined text-primary text-4xl mb-4">explore</span>
+                        <h4 class="text-xl font-bold text-white mb-4">View Interactive Map</h4>
+                        <p class="text-zinc-400 text-sm mb-8">Detailed 2.5D floor plans and action hotspots for the entire island crescent.</p>
+                        <button class="px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-black transition-all font-bold">Launch Exploration</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Royal Atlantis -->
+            <div class="md:col-span-4 card-flip">
+                <div class="card-inner">
+                    <div class="card-front relative shadow-2xl">
+                        <img src="assets/royal_atlantis.png" class="w-full h-full object-cover" alt="Royal Atlantis">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-8">
+                            <h4 class="text-xl font-bold text-white">Royal Atlantis</h4>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <span class="material-symbols-outlined text-primary text-4xl mb-4">layers</span>
+                        <h4 class="text-xl font-bold text-white mb-4">The Next Level</h4>
+                        <p class="text-zinc-400 text-sm mb-8">Stacked architectural mapping for multi-level luxury integration and unit-specific navigation.</p>
+                        <button class="px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-black transition-all font-bold">Launch Exploration</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rixos Premium Saadiyat Island -->
+            <div class="md:col-span-5 card-flip">
+                <div class="card-inner">
+                    <div class="card-front relative shadow-2xl">
+                        <img src="assets/rixos_saadiyat.png" class="w-full h-full object-cover" alt="Rixos Premium Saadiyat Island">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-8">
+                            <h4 class="text-xl font-bold text-white">Rixos Premium Saadiyat Island</h4>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <span class="material-symbols-outlined text-primary text-4xl mb-4">beach_access</span>
+                        <h4 class="text-xl font-bold text-white mb-4">Beachfront Intelligence</h4>
+                        <p class="text-zinc-400 text-sm mb-8">Spatial navigation for sprawling Mediterranean-style estates and shoreline amenity tracking.</p>
+                        <button class="px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-black transition-all font-bold">Launch Exploration</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rixos Marina Abu Dhabi -->
+            <div class="md:col-span-7 card-flip">
+                <div class="card-inner">
+                    <div class="card-front relative shadow-2xl">
+                        <img src="assets/rixos_marina.png" class="w-full h-full object-cover" alt="Rixos Marina Abu Dhabi">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-8">
+                            <h4 class="text-2xl font-bold text-white">Rixos Marina Abu Dhabi</h4>
+                        </div>
+                    </div>
+                    <div class="card-back">
+                        <span class="material-symbols-outlined text-primary text-4xl mb-4">directions_boat</span>
+                        <h4 class="text-xl font-bold text-white mb-4">Waterfront Wayfinding</h4>
+                        <p class="text-zinc-400 text-sm mb-8">Integrated marina and hotel complex mapping with real-time berth availability and HUD overlays.</p>
+                        <button class="px-6 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-black transition-all font-bold">Launch Exploration</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Analytics/Geomarketing Section -->
+<section id="analytics" class="py-32 px-8">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+<div class="order-2 lg:order-1 relative">
+<div class="aspect-square glass-panel rounded-3xl border border-outline-variant/20 p-8 flex flex-col">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h5 class="font-headline text-4xl font-bold text-zinc-100">84%</h5>
+<p class="text-[10px] font-bold uppercase tracking-widest text-primary">Engagement Rate</p>
+</div>
+<div class="flex gap-1 items-end">
+<div class="w-3 h-12 bg-primary/20 rounded-t-sm"></div>
+<div class="w-3 h-20 bg-primary/40 rounded-t-sm"></div>
+<div class="w-3 h-32 bg-primary/60 rounded-t-sm"></div>
+<div class="w-3 h-40 bg-primary rounded-t-sm"></div>
+</div>
+</div>
+<div class="space-y-6">
+<div class="flex justify-between items-center p-4 bg-surface-container-lowest rounded-xl">
+<span class="text-sm font-semibold">Poolside Bar Search</span>
+<span class="text-sm font-bold text-primary">+120% this week</span>
+</div>
+<div class="flex justify-between items-center p-4 bg-surface-container-lowest rounded-xl">
+<span class="text-sm font-semibold">Late Checkout Requests</span>
+<span class="text-sm font-bold text-primary">Peak: 10:00 AM</span>
+</div>
+</div>
+</div>
+</div>
+<div class="order-1 lg:order-2">
+<h2 class="font-headline font-bold text-5xl text-zinc-100 mb-8 leading-tight tracking-tight">Guest Engagement Insights.</h2>
+<p class="text-xl text-on-surface-variant mb-10 leading-relaxed font-medium">
+                        Track which amenities guests are searching for and clicking on the map. Turn spatial behavior into actionable data to optimize your staff allocation and guest satisfaction.
+                    </p>
+<ul class="space-y-6">
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">query_stats</span>
+<span class="text-on-surface font-medium">Heatmaps of guest intent throughout the day.</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">conversion_path</span>
+<span class="text-on-surface font-medium">Conversion tracking from map-tap to confirmed service.</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">notifications_active</span>
+<span class="text-on-surface font-medium">Proactive staffing alerts based on real-time search clusters.</span>
+</li>
+<li class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">payments</span>
+<span class="text-on-surface font-medium">Micro-location ROI tracking for poolside and spa interactions.</span>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section id="contact" class="py-32 px-8">
+<div class="max-w-5xl mx-auto rounded-[3rem] bg-zinc-900 overflow-hidden relative border border-outline-variant/30 text-center py-20 px-10">
+<div class="absolute inset-0 bg-primary/5 blur-[100px]"></div>
+<h2 class="font-headline font-extrabold text-5xl md:text-6xl text-zinc-100 mb-8 relative z-10 tracking-tight">Ready to animate your assets?</h2>
+<p class="text-xl text-on-surface-variant max-w-2xl mx-auto mb-12 relative z-10 font-medium">Join leading hotel groups in defining the next generation of spatial digital experiences.</p>
+<button class="btn-gradient px-12 py-5 rounded-2xl text-on-primary font-bold text-xl hover:scale-105 transition-transform relative z-10 shadow-2xl">
+                    Contact Sales
+                </button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-zinc-950 w-full border-t border-zinc-800/30 pt-24 pb-12">
+<div class="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
+<div class="md:col-span-1">
+<div class="text-xl font-bold text-zinc-200 mb-6 uppercase tracking-tighter">Interactive Mapper</div>
+<p class="text-zinc-500 text-sm font-medium leading-relaxed">
+                    Precision Digital Cartography for the high-end hospitality industry.
+                </p>
+</div>
+<div>
+<h6 class="font-headline text-xs font-bold uppercase tracking-widest text-zinc-200 mb-6">Product</h6>
+<ul class="space-y-4 text-sm">
+<li><a class="text-zinc-500 hover:text-zinc-300 transition-colors font-medium" href="#">Integration API</a></li>
+<li><a class="text-zinc-500 hover:text-zinc-300 transition-colors font-medium" href="#">Map Engine</a></li>
+<li><a class="text-zinc-500 hover:text-zinc-300 transition-colors font-medium" href="#">Analytics Suite</a></li>
+<li><a class="text-zinc-500 hover:text-zinc-300 transition-colors font-medium" href="#">Case Studies</a></li>
+</ul>
+</div>
+<div>
+<h6 class="font-headline text-xs font-bold uppercase tracking-widest text-zinc-200 mb-6">Company</h6>
+<ul class="space-y-4 text-sm">
+<li><a class="text-zinc-500 hover:text-zinc-300 transition-colors font-medium" href="#">About Us</a></li>
+<li><a class="text-zinc-500 hover:text-zinc-300 transition-colors font-medium" href="#">Careers</a></li>
+<li><a class="text-zinc-500 hover:text-zinc-300 transition-colors font-medium" href="#">Contact Sales</a></li>
+<li><a class="text-zinc-500 hover:text-zinc-300 transition-colors font-medium" href="#">Press Kit</a></li>
+</ul>
+</div>
+<div>
+<h6 class="font-headline text-xs font-bold uppercase tracking-widest text-zinc-200 mb-6">Legal</h6>
+<ul class="space-y-4 text-sm">
+<li><a class="text-zinc-500 hover:text-zinc-300 transition-colors font-medium" href="#">Privacy Policy</a></li>
+<li><a class="text-zinc-500 hover:text-zinc-300 transition-colors font-medium" href="#">Terms of Service</a></li>
+<li><a class="text-zinc-500 hover:text-zinc-300 transition-colors font-medium" href="#">Cookie Settings</a></li>
+</ul>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-8 mt-24 flex flex-col md:flex-row justify-between items-center text-zinc-600 text-[10px] uppercase font-bold tracking-[0.2em]">
+<div>© 2026 Interactive Mapper. Precision Digital Cartography.</div>
+<div class="mt-4 md:mt-0 flex gap-8">
+<a class="hover:text-primary transition-colors" href="#">LinkedIn</a>
+<a class="hover:text-primary transition-colors" href="#">Twitter</a>
+<a class="hover:text-primary transition-colors" href="#">Instagram</a>
+</div>
+</div>
+</footer>
+
+<script>
+    // Intersection Observer for scroll-reveal animations
+    const observerOptions = {
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                entry.target.classList.remove('opacity-0', 'translate-y-10');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Initial state for sections and cards
+    document.querySelectorAll('section, .p-8.rounded-2xl, .md\\:col-span-7, .md\\:col-span-5').forEach(el => {
+        el.classList.add('transition-all', 'duration-1000', 'ease-out', 'opacity-0', 'translate-y-10');
+        observer.observe(el);
+    });
+</script>
+</body></html>
