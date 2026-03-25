@@ -137,22 +137,22 @@
             z-index: 10;
         }
         
-        /* Animated RGB Border */
-        @keyframes rgbBorder {
+        /* Animated Accent Border */
+        @keyframes accentBorder {
             0% { background-position: 0% 50%; }
             100% { background-position: 100% 50%; }
         }
-        .btn-rgb-animated {
+        .btn-accent-animated {
             position: relative;
-            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000);
+            background: linear-gradient(90deg, #131313, #4b8eff, #adc6ff, #4b8eff, #131313);
             background-size: 200% 200%;
-            animation: rgbBorder 3s linear infinite;
+            animation: accentBorder 2.5s ease-in-out infinite alternate;
             padding: 2px; /* border width */
             border-radius: 0.75rem; /* rounded-xl */
             display: inline-flex;
             text-decoration: none;
         }
-        .btn-rgb-inner {
+        .btn-accent-inner {
             border-radius: calc(0.75rem - 2px);
             display: inline-flex;
             align-items: center;
@@ -194,8 +194,8 @@
 <button class="btn-gradient px-10 py-4 rounded-xl text-on-primary font-bold text-lg hover:shadow-[0_0_30px_rgba(75,142,255,0.4)] transition-all">
                             Upgrade Your Map
                         </button>
-<a href="https://rpsi-map.vercel.app/" target="_blank" class="btn-rgb-animated transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] font-bold text-lg">
-                            <span class="btn-rgb-inner px-10 py-4 bg-background text-zinc-100 hover:text-white hover:bg-surface-container transition-colors">
+<a href="https://rpsi-map.vercel.app/" target="_blank" class="btn-accent-animated transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(75,142,255,0.15)] hover:shadow-[0_0_30px_rgba(75,142,255,0.3)] font-bold text-lg">
+                            <span class="btn-accent-inner px-10 py-4 bg-background text-zinc-100 hover:text-white hover:bg-surface-container transition-colors">
                                 See in Action
                             </span>
                         </a>
