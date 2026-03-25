@@ -120,7 +120,7 @@
 </head>
 <body class="bg-background text-on-background font-body selection:bg-primary/30">
 <!-- Top Navigation Bar -->
-<nav class="fixed top-0 w-full z-50 bg-zinc-950/60 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+<nav id="main-nav" class="fixed top-0 w-full z-50 bg-zinc-950/60 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] transition-all duration-500 -translate-y-[150%] opacity-0 md:translate-y-0 md:opacity-100">
 <div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
 <div class="text-2xl font-bold tracking-tighter text-zinc-100 uppercase">Nocturnal Horizon</div>
 <div class="hidden md:flex items-center space-x-8">
@@ -379,4 +379,17 @@
 </div>
 </div>
 </footer>
+<script>
+    // Mobile Navigation Scroll Reveal
+    const mainNav = document.getElementById('main-nav');
+    if (mainNav) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > window.innerHeight * 0.5) {
+                mainNav.classList.remove('-translate-y-[150%]', 'opacity-0');
+            } else {
+                mainNav.classList.add('-translate-y-[150%]', 'opacity-0');
+            }
+        });
+    }
+</script>
 </body></html>
