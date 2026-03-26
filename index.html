@@ -195,19 +195,50 @@
 
         .floating-action-btn {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
             z-index: 100;
-            opacity: 0;
-            transform: translateY(20px) scale(0.8);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            overflow: hidden;
             pointer-events: none;
+            opacity: 0;
+            background: linear-gradient(135deg, #adc6ff 0%, #4b8eff 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .floating-action-btn.visible {
+        .floating-action-btn.is-sticky {
             opacity: 1;
-            transform: translateY(0) scale(1);
             pointer-events: auto;
+            bottom: 32px !important;
+            right: 32px !important;
+            width: 56px !important;
+            height: 56px !important;
+            border-radius: 9999px !important;
+            top: auto !important;
+            left: auto !important;
+            transform: scale(1);
+        }
+
+        .floating-action-btn .btn-text {
+            white-space: nowrap;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+
+        .floating-action-btn .btn-icon {
+            display: none;
+            font-size: 28px;
+        }
+
+        .floating-action-btn.is-sticky .btn-text {
+            display: none;
+        }
+
+        .floating-action-btn.is-sticky .btn-icon {
+            display: block;
         }
     </style>
 </head>
@@ -262,8 +293,8 @@
                             class="btn-gradient px-10 py-4 rounded-xl text-on-primary font-bold text-lg hover:shadow-[0_0_30px_rgba(75,142,255,0.4)] transition-all">
                             Upgrade Your Map
                         </button>
-                        <a href="https://rpsi-map.vercel.app/" target="_blank"
-                            class="btn-accent-animated transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(75,142,255,0.15)] hover:shadow-[0_0_30px_rgba(75,142,255,0.3)] font-bold text-lg">
+                        <a href="https://rpsi-map.vercel.app/" target="_blank" id="hero-action-btn"
+                            class="invisible btn-accent-animated transition-all shadow-[0_0_20px_rgba(75,142,255,0.15)] font-bold text-lg">
                             <span
                                 class="btn-accent-inner px-10 py-4 bg-background text-zinc-100 hover:text-white hover:bg-surface-container transition-colors">
                                 See in Action
@@ -820,30 +851,47 @@
             analyticsCarousel.addEventListener('scroll', syncAnalyticsDots, { passive: true });
         }
 
-        // Sticky CTA Visibility
+        // Morphing CTA Logic
+        const heroActionBtn = document.getElementById('hero-action-btn');
         const stickyCta = document.getElementById('sticky-cta');
-        const heroSection = document.querySelector('section');
+        let isSticky = false;
 
-        const updateStickyCta = () => {
-            if (!stickyCta) return;
-            const heroHeight = heroSection ? heroSection.offsetHeight : 800;
-            if (window.scrollY > heroHeight - 100) {
-                stickyCta.classList.add('visible');
+        const updateMorphButton = () => {
+            if (!heroActionBtn || !stickyCta) return;
+            
+            const rect = heroActionBtn.getBoundingClientRect();
+            const scrollThreshold = rect.bottom;
+
+            if (scrollThreshold < 0) {
+                if (!isSticky) {
+                    isSticky = true;
+                    stickyCta.classList.add('is-sticky');
+                }
             } else {
-                stickyCta.classList.remove('visible');
+                if (isSticky) {
+                    isSticky = false;
+                    stickyCta.classList.remove('is-sticky');
+                }
+                
+                // Track hero button exactly when visible
+                stickyCta.style.top = `${rect.top}px`;
+                stickyCta.style.left = `${rect.left}px`;
+                stickyCta.style.width = `${rect.width}px`;
+                stickyCta.style.height = `${rect.height}px`;
+                stickyCta.style.borderRadius = '0.75rem';
+                stickyCta.style.opacity = scrollThreshold > 0 ? '1' : '0';
             }
         };
 
-        window.addEventListener('scroll', updateStickyCta, { passive: true });
-        updateStickyCta(); // Initial check
+        window.addEventListener('scroll', updateMorphButton, { passive: true });
+        window.addEventListener('resize', updateMorphButton);
+        updateMorphButton();
     </script>
     
-    <!-- Sticky Floating CTA -->
-    <a href="https://rpsi-map.vercel.app/" target="_blank" id="sticky-cta" class="floating-action-btn w-14 h-14 rounded-full bg-blue-static border border-white/20 shadow-2xl flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-transform group">
-        <span class="material-symbols-outlined text-3xl font-bold">play_arrow</span>
-        <div class="absolute right-full mr-4 px-4 py-2 bg-black/80 backdrop-blur-md rounded-lg text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none text-white">
-            See in Action
-        </div>
+    <!-- Sticky Morphing CTA -->
+    <a href="https://rpsi-map.vercel.app/" target="_blank" id="sticky-cta" class="floating-action-btn text-white">
+        <span class="btn-text">See in Action</span>
+        <span class="btn-icon material-symbols-outlined">play_arrow</span>
     </a>
 </body>
 
