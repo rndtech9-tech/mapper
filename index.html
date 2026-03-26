@@ -194,7 +194,7 @@
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(75, 142, 255, 0.7); }
+            0% { box-shadow: 0 0 0 0 rgba(75, 142, 255, 0.4); }
             70% { box-shadow: 0 0 0 15px rgba(75, 142, 255, 0); }
             100% { box-shadow: 0 0 0 0 rgba(75, 142, 255, 0); }
         }
@@ -203,25 +203,56 @@
             position: fixed;
             bottom: 32px;
             right: 32px;
-            z-index: 100;
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
             width: 56px;
             height: 56px;
             border-radius: 9999px;
-            background: linear-gradient(135deg, #adc6ff 0%, #4b8eff 100%);
+            background: #000000;
             color: white;
-            box-shadow: 0 10px 40px rgba(75, 142, 255, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            opacity: 1;
-            transform: scale(1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
             transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            animation: pulse 2s infinite;
+            animation: pulse 2.5s infinite;
+            padding: 0 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-decoration: none;
         }
 
-        .floating-action-btn:hover {
-            transform: scale(1.1);
+        .floating-action-btn:hover, .floating-action-btn.active {
+            width: 180px;
+            border-radius: 12px;
+            background: #111111;
+        }
+
+        .floating-action-btn .btn-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 28px;
+            margin-right: 0;
+            transition: margin 0.3s;
+        }
+
+        .floating-action-btn:hover .btn-icon, .floating-action-btn.active .btn-icon {
+            margin-right: 12px;
+        }
+
+        .floating-action-btn .btn-text {
+            opacity: 0;
+            width: 0;
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s;
+        }
+
+        .floating-action-btn:hover .btn-text, .floating-action-btn.active .btn-text {
+            opacity: 1;
+            width: auto;
         }
     </style>
 </head>
@@ -833,12 +864,34 @@
             analyticsCarousel.addEventListener('touchstart', () => clearInterval(analyticsInterval), { passive: true });
             analyticsCarousel.addEventListener('scroll', syncAnalyticsDots, { passive: true });
         }
+    </script>
 
+    <script>
+        // Morphing Redirect Logic
+        const morphCta = document.getElementById('morph-cta');
+        if (morphCta) {
+            morphCta.addEventListener('click', (e) => {
+                e.preventDefault();
+                morphCta.classList.add('active');
+                
+                // Allow time for morph animation before redirect
+                setTimeout(() => {
+                    window.open(morphCta.href, '_blank');
+                    morphCta.classList.remove('active');
+                }, 600);
+            });
+            
+            // Mobile Tap handling
+            morphCta.addEventListener('touchstart', () => {
+                morphCta.classList.add('active');
+            }, { passive: true });
+        }
     </script>
     
-    <!-- Sticky Floating CTA -->
-    <a href="https://rpsi-map.vercel.app/" target="_blank" class="floating-action-btn">
-        <span class="material-symbols-outlined text-3xl font-bold">play_arrow</span>
+    <!-- Gemini-style Morphing CTA -->
+    <a href="https://rpsi-map.vercel.app/" id="morph-cta" class="floating-action-btn">
+        <span class="btn-icon material-symbols-outlined">auto_awesome</span>
+        <span class="btn-text">See in Action</span>
     </a>
 </body>
 
