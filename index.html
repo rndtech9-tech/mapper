@@ -192,6 +192,23 @@
         .bg-blue-static {
             background: linear-gradient(135deg, #adc6ff 0%, #4b8eff 100%);
         }
+
+        .floating-action-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .floating-action-btn.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
     </style>
 </head>
 
@@ -802,7 +819,32 @@
             analyticsCarousel.addEventListener('touchstart', () => clearInterval(analyticsInterval), { passive: true });
             analyticsCarousel.addEventListener('scroll', syncAnalyticsDots, { passive: true });
         }
+
+        // Sticky CTA Visibility
+        const stickyCta = document.getElementById('sticky-cta');
+        const heroSection = document.querySelector('section');
+
+        const updateStickyCta = () => {
+            if (!stickyCta) return;
+            const heroHeight = heroSection ? heroSection.offsetHeight : 800;
+            if (window.scrollY > heroHeight - 100) {
+                stickyCta.classList.add('visible');
+            } else {
+                stickyCta.classList.remove('visible');
+            }
+        };
+
+        window.addEventListener('scroll', updateStickyCta, { passive: true });
+        updateStickyCta(); // Initial check
     </script>
+    
+    <!-- Sticky Floating CTA -->
+    <a href="https://rpsi-map.vercel.app/" target="_blank" id="sticky-cta" class="floating-action-btn w-14 h-14 rounded-full bg-blue-static border border-white/20 shadow-2xl flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-transform group">
+        <span class="material-symbols-outlined text-3xl font-bold">play_arrow</span>
+        <div class="absolute right-full mr-4 px-4 py-2 bg-black/80 backdrop-blur-md rounded-lg text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none text-white">
+            See in Action
+        </div>
+    </a>
 </body>
 
 </html>
