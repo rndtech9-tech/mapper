@@ -877,24 +877,35 @@
     </script>
 
     <script>
-        // Morphing Redirect Logic
+        // Two-Step Morphing Redirect Logic
         const morphCta = document.getElementById('morph-cta');
         if (morphCta) {
             morphCta.addEventListener('click', (e) => {
-                e.preventDefault();
-                morphCta.classList.add('active');
+                // If it's a mobile device and not yet active, just expand it
+                const isMobile = window.innerWidth < 768;
+                if (isMobile && !morphCta.classList.contains('active')) {
+                    e.preventDefault();
+                    morphCta.classList.add('active');
+                    return;
+                }
                 
-                // Allow time for morph animation before redirect
-                setTimeout(() => {
-                    window.open(morphCta.href, '_blank');
-                    morphCta.classList.remove('active');
-                }, 600);
+                // On desktop it works on hover, so this just handles the click
+                // On mobile this handles the second tap
+                if (isMobile) {
+                    // Prevent default to ensure our timeout/transition plays
+                    e.preventDefault();
+                    setTimeout(() => {
+                        window.open(morphCta.href, '_blank');
+                    }, 200);
+                }
             });
-            
-            // Mobile Tap handling
-            morphCta.addEventListener('touchstart', () => {
-                morphCta.classList.add('active');
-            }, { passive: true });
+
+            // Reset active state when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!morphCta.contains(e.target)) {
+                    morphCta.classList.remove('active');
+                }
+            });
         }
     </script>
     
